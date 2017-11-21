@@ -66,6 +66,7 @@ public abstract class RiemannBundle<T extends Configuration> implements Configur
                                 .tags(riemannConfig.getTags())
                                 .prefixedWith(riemannConfig.getPrefix())
                                 .useSeparator(".")
+                                .localHost(riemannConfig.getHostnameResolution().getHostname())
                                 .convertDurationsTo(TimeUnit.MILLISECONDS).convertRatesTo(TimeUnit.SECONDS);
                         riemannReporter = builder.build(riemann);
                         riemannReporter.start(riemannConfig.getPollingInterval(), TimeUnit.SECONDS);
