@@ -16,11 +16,13 @@
 
 package io.dropwizard.riemann;
 
+import com.codahale.metrics.riemann.HostnameResolution;
 import lombok.*;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,4 +49,7 @@ public class RiemannConfig {
 
     @Singular
     private List<String> tags = Collections.emptyList();
+
+    @NotNull
+    private HostnameResolution hostnameResolution = HostnameResolution.LOCAL;
 }

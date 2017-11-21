@@ -24,8 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -69,14 +67,10 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
             this.durationUnit = TimeUnit.MILLISECONDS;
             this.filter = MetricFilter.ALL;
             this.ttl = null;
-            this.tags = new ArrayList<String>();
+            this.tags = new ArrayList<>();
             this.prefix = null;
             this.separator = " ";
-            try {
-                this.localHost = InetAddress.getLocalHost().getHostName();
-            } catch (UnknownHostException e) {
-                this.localHost = null;
-            }
+            this.localHost = null;
         }
 
         /**
