@@ -3,7 +3,7 @@ package com.codahale.metrics.riemann;
 import java.net.InetAddress;
 
 public enum HostnameResolution {
-    LOCAL() {
+    LOCAL {
         @Override
         public String getHostname() {
             try {
