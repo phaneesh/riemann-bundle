@@ -18,6 +18,7 @@ package com.codahale.metrics.riemann;
 
 import com.codahale.metrics.*;
 import com.codahale.metrics.Timer;
+import com.google.common.collect.Maps;
 import io.riemann.riemann.client.EventDSL;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -60,6 +61,7 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
         private String separator;
         private String localHost;
         private final List<String> tags;
+        private Map<String, String> attributes;
 
 
         private Builder(MetricRegistry registry) {
@@ -77,6 +79,7 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
             } catch (UnknownHostException e) {
                 this.localHost = null;
             }
+            this.attributes = Maps.newHashMap();
         }
 
         /**
@@ -179,6 +182,11 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
             return this;
         }
 
+        public Builder attributes(Map<String, String> attributes) {
+            this.attributes.clear();;
+            this.attributes.putAll(attributes);
+            return this;
+        }
 
         /**
          * Builds a {@link RiemannReporter} with the given properties, sending metrics using the
@@ -198,6 +206,7 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
                     separator,
                     localHost,
                     tags,
+                    attributes,
                     filter);
         }
     }
@@ -211,6 +220,7 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
     private final String localHost;
     private final List<String> tags;
     private final Float ttl;
+    private Map<String, String> attributes;
 
     private String appName;
 
@@ -224,6 +234,7 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
                             String separator,
                             String localHost,
                             List<String> tags,
+                            Map<String, String> attributes,
                             MetricFilter filter) {
         super(registry, "riemann-reporter", filter, rateUnit, durationUnit);
         this.riemann = riemann;
@@ -234,6 +245,7 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
         this.tags = tags;
         this.ttl = ttl;
         this.appName = StringUtils.substringAfterLast(prefix, ".");
+        this.attributes = attributes;
     }
 
     private interface EventClosure {
@@ -275,6 +287,9 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
                     event.attribute("app", tags.get(0));
                 } else {
                     event.attribute("app", appName);
+                }
+                if (attributes != null && !attributes.isEmpty()) {
+                    event.attributes(attributes);
                 }
                 return event;
             }
