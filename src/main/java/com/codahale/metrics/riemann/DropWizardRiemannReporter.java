@@ -177,14 +177,18 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
          * @return {@code this}
          */
         public Builder tags(Collection<String> tags) {
-            this.tags.clear();
-            this.tags.addAll(tags);
+            if (tags != null) {
+                this.tags.clear();
+                this.tags.addAll(tags);
+            }
             return this;
         }
 
         public Builder attributes(Map<String, String> attributes) {
-            this.attributes.clear();;
-            this.attributes.putAll(attributes);
+            if (attributes != null) {
+                this.attributes.clear();
+                this.attributes.putAll(attributes);
+            }
             return this;
         }
 
