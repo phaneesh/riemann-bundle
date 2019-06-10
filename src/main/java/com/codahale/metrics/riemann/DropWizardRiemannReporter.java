@@ -253,11 +253,11 @@ public class DropWizardRiemannReporter extends ScheduledReporter{
         this.appName = StringUtils.substringAfterLast(prefix, ".");
     }
 
-    public interface EventClosure {
+    private interface EventClosure {
         EventDSL name(String... components);
     }
 
-    public EventClosure newEvent(final String metricName, final long timestamp, final String metricType) {
+    private EventClosure newEvent(final String metricName, final long timestamp, final String metricType) {
         final String prefix = this.prefix;
         final String separator = this.separator;
         return new EventClosure() {
@@ -274,12 +274,12 @@ public class DropWizardRiemannReporter extends ScheduledReporter{
                     event.tags(tags);
                 }
                 final StringBuilder sb = new StringBuilder();
-                if (prefix != null) {
-                    sb.append(prefix);
-                    sb.append(separator);
-                }
                 if (dc != null) {
                     sb.append(dc);
+                    sb.append(separator);
+                }
+                if (prefix != null) {
+                    sb.append(prefix);
                     sb.append(separator);
                 }
                 sb.append(metricName);
