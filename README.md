@@ -55,6 +55,7 @@ Use the following maven dependency:
 ### Configuration
 ```
 riemann:
+  dc: mydc
   host: my.riemann.host
   port: 5556
   prefix: mycompany.myenvironment.myservice
@@ -64,6 +65,20 @@ riemann:
     - mytag2
     - mytag3
 ```
+### DC Aware
+
+The bundle can be configured to have DC (Data Center) awareness 
+for the metrics pushed. Unlike the host and the prefix, it 
+however is not a mandatory parameter. Nevertheless, if a DC id 
+was passed, the metric takes the following form
+> mydc.mycompany.myenvironment.myservice.${metric}
+
+where ${metric} denotes the actual metric and ``mydc`` the respective
+DC id passed in the configuration.
+
+One other way to encode the DC information is to list it as one of the tags.
+
+ 
 
 LICENSE
 -------

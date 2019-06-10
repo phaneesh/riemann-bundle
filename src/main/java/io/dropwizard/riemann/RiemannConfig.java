@@ -33,6 +33,8 @@ import java.util.List;
 @Builder
 public class RiemannConfig {
 
+    private String dc;
+
     @NotEmpty
     private String host;
 

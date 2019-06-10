@@ -54,20 +54,19 @@ public abstract class RiemannBundle<T extends Configuration> implements Configur
             @Override
             public void start() {
                 if (riemann == null) {
-                    final val riemannConfig = getRiemannConfiguration(configuration);
+                    val riemannConfig = getRiemannConfiguration(configuration);
                     if(riemannConfig == null || Strings.isNullOrEmpty(riemannConfig.getHost())) {
                         log.warn("No valid reimann host found!. Cannot start reimann bundle");
                         return;
                     }
                     try {
-                        String dc = System.getenv("DC");
                         String host = System.getenv("HOST");
                         if(host == null) {
                             host = InetAddress.getLocalHost().getHostName();
                         }
                         riemann = new Riemann(riemannConfig.getHost(), riemannConfig.getPort());
                         DropWizardRiemannReporter.Builder builder = DropWizardRiemannReporter.forRegistry(environment.metrics())
-                                .withDc(dc)
+                                .withDc(riemannConfig.getDc())
                                 .tags(riemannConfig.getTags())
                                 .prefixedWith(riemannConfig.getPrefix())
                                 .useSeparator(".")
