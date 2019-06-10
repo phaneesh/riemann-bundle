@@ -70,7 +70,7 @@ riemann:
 The bundle can be configured to have DC (Data Center) awareness 
 for the metrics pushed. Unlike the host and the prefix, it 
 however is not a mandatory parameter. Nevertheless, if a DC id 
-was passed, the metric takes the following form
+is passed in the riemann config, the metrics take the following form
 > mydc.mycompany.myenvironment.myservice.${metric}
 
 where ${metric} denotes the actual metric and ``mydc`` the respective
