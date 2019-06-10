@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by phaneesh on 1/7/16.
  */
-public class DropWizardRiemannReporter extends ScheduledReporter {
+public class DropWizardRiemannReporter extends ScheduledReporter{
 
     /**
      * Returns a new {@link Builder} for {@link RiemannReporter}.
@@ -56,6 +56,7 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
         private TimeUnit durationUnit;
         private MetricFilter filter;
         private Float ttl;
+        private String dc;
         private String prefix;
         private String separator;
         private String localHost;
@@ -70,6 +71,7 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
             this.filter = MetricFilter.ALL;
             this.ttl = null;
             this.tags = new ArrayList<String>();
+            this.dc = null;
             this.prefix = null;
             this.separator = " ";
             try {
@@ -87,6 +89,17 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
          */
         public Builder withClock(Clock clock) {
             this.clock = clock;
+            return this;
+        }
+
+        /**
+         * Prefix all metric names with the dc id
+         *
+         * @param dc the prefix for all metric names
+         * @return {@code this}
+         */
+        public Builder withDc(String dc){
+            this.dc = dc;
             return this;
         }
 
@@ -194,6 +207,7 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
                     rateUnit,
                     durationUnit,
                     ttl,
+                    dc,
                     prefix,
                     separator,
                     localHost,
@@ -207,6 +221,7 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
     private final Riemann riemann;
     private final Clock clock;
     private final String prefix;
+    private final String dc;
     private final String separator;
     private final String localHost;
     private final List<String> tags;
@@ -220,6 +235,7 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
                             TimeUnit rateUnit,
                             TimeUnit durationUnit,
                             Float ttl,
+                            String dc,
                             String prefix,
                             String separator,
                             String localHost,
@@ -228,6 +244,7 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
         super(registry, "riemann-reporter", filter, rateUnit, durationUnit);
         this.riemann = riemann;
         this.clock = clock;
+        this.dc = dc;
         this.prefix = prefix;
         this.separator = separator;
         this.localHost = localHost;
@@ -236,15 +253,15 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
         this.appName = StringUtils.substringAfterLast(prefix, ".");
     }
 
-    private interface EventClosure {
-        public EventDSL name(String... components);
+    public interface EventClosure {
+        EventDSL name(String... components);
     }
 
-
-    private EventClosure newEvent(final String metricName, final long timestamp, final String metricType) {
+    public EventClosure newEvent(final String metricName, final long timestamp, final String metricType) {
         final String prefix = this.prefix;
         final String separator = this.separator;
         return new EventClosure() {
+            @Override
             public EventDSL name(String... components) {
                 EventDSL event = riemann.client.event();
                 if (localHost != null) {
@@ -261,6 +278,10 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
                     sb.append(prefix);
                     sb.append(separator);
                 }
+                if (dc != null) {
+                    sb.append(dc);
+                    sb.append(separator);
+                }
                 sb.append(metricName);
 
                 for (String part : components) {
@@ -271,7 +292,7 @@ public class DropWizardRiemannReporter extends ScheduledReporter {
                 event.service(sb.toString());
                 event.time(timestamp);
                 event.attribute("metric-type", metricType);
-                if(!tags.isEmpty()) {
+                if (!tags.isEmpty()) {
                     event.attribute("app", tags.get(0));
                 } else {
                     event.attribute("app", appName);

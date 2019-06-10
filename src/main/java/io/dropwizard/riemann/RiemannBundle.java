@@ -17,10 +17,8 @@ package io.dropwizard.riemann;
 
 import com.codahale.metrics.riemann.DropWizardRiemannReporter;
 import com.codahale.metrics.riemann.Riemann;
-import com.codahale.metrics.riemann.RiemannReporter;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import io.dropwizard.Configuration;
 import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.lifecycle.Managed;
@@ -54,7 +52,7 @@ public abstract class RiemannBundle<T extends Configuration> implements Configur
     public void run(T configuration, Environment environment) {
         environment.lifecycle().manage(new Managed() {
             @Override
-            public void start() throws Exception {
+            public void start() {
                 if (riemann == null) {
                     final val riemannConfig = getRiemannConfiguration(configuration);
                     if(riemannConfig == null || Strings.isNullOrEmpty(riemannConfig.getHost())) {
@@ -62,12 +60,14 @@ public abstract class RiemannBundle<T extends Configuration> implements Configur
                         return;
                     }
                     try {
+                        String dc = System.getenv("DC");
                         String host = System.getenv("HOST");
                         if(host == null) {
                             host = InetAddress.getLocalHost().getHostName();
                         }
                         riemann = new Riemann(riemannConfig.getHost(), riemannConfig.getPort());
                         DropWizardRiemannReporter.Builder builder = DropWizardRiemannReporter.forRegistry(environment.metrics())
+                                .withDc(dc)
                                 .tags(riemannConfig.getTags())
                                 .prefixedWith(riemannConfig.getPrefix())
                                 .useSeparator(".")
