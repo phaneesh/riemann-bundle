@@ -23,6 +23,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author phaneesh
@@ -47,4 +48,6 @@ public class RiemannConfig {
 
     @Singular
     private List<String> tags = Collections.emptyList();
+
+    private Map<String, String> attributes = Collections.emptyMap();
 }

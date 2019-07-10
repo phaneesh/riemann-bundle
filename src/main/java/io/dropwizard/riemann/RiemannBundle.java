@@ -17,10 +17,8 @@ package io.dropwizard.riemann;
 
 import com.codahale.metrics.riemann.DropWizardRiemannReporter;
 import com.codahale.metrics.riemann.Riemann;
-import com.codahale.metrics.riemann.RiemannReporter;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import io.dropwizard.Configuration;
 import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.lifecycle.Managed;
@@ -72,6 +70,7 @@ public abstract class RiemannBundle<T extends Configuration> implements Configur
                                 .prefixedWith(riemannConfig.getPrefix())
                                 .useSeparator(".")
                                 .localHost(host)
+                                .attributes(riemannConfig.getAttributes())
                                 .convertDurationsTo(TimeUnit.MILLISECONDS).convertRatesTo(TimeUnit.SECONDS);
                         riemannReporter = builder.build(riemann);
                         riemannReporter.start(riemannConfig.getPollingInterval(), TimeUnit.SECONDS);
