@@ -4,7 +4,7 @@ This bundle simplifies integrating dropwizard metrics with [Riemann](http://riem
 This bundle compiles only on Java 8.
  
 ## Dependencies
-* [metrics3-riemann-reporter](https://github.com/riemann/riemann-java-client/tree/master/metrics3-riemann-reporter) 0.4.1 
+* [metrics3-riemann-reporter](https://github.com/riemann/riemann-java-client/tree/master/metrics3-riemann-reporter) 0.4.5 
 
 ## Usage
 The bundle integrates dropwizard metrics with [Riemann](http://riemann.io/) with a simple configuration. 
@@ -30,9 +30,9 @@ Use the following repository:
 Use the following maven dependency:
 ```xml
 <dependency>
-    <groupId>io.dropwizard</groupId>
+    <groupId>io.raven.dropwizard</groupId>
     <artifactId>dropwizard-riemann</artifactId>
-    <version>1.3.7-1</version>
+    <version>1.3.12-1</version>
 </dependency>
 ```
 
