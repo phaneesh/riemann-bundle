@@ -32,7 +32,7 @@ Use the following maven dependency:
 <dependency>
     <groupId>io.raven.dropwizard</groupId>
     <artifactId>dropwizard-riemann</artifactId>
-    <version>2.0.16-1</version>
+    <version>2.0.18-1</version>
 </dependency>
 ```
 
